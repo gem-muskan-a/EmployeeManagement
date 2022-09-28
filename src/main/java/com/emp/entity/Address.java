@@ -23,15 +23,6 @@ public class Address {
     private String state;
     private String pincode;
     private boolean isActive = true;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public Address(AddressDto ad) {
-        this.addressId = ad.getAddressId();
-        this.address = ad.getAddress();
-        this.city = ad.getCity();
-        this.state = ad.getState();
-        this.pincode = ad.getPincode();
-        this.isActive = ad.isActive();
-        this.isDeleted = ad.isDeleted();
-    }
 }

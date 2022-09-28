@@ -26,17 +26,6 @@ public class Department {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date updatedOn;
     private boolean isActive = true;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public Department(DepartmentDto dept) {
-        this.departmentId = dept.getDepartmentId();
-        this.departmentName = dept.getDepartmentName();
-        this.departmentDesc = dept.getDepartmentDesc();
-        this.createdBy = dept.getCreatedBy();
-        this.updatedBy = dept.getUpdatedBy();
-        this.createdOn = dept.getCreatedOn();
-        this.updatedOn = dept.getUpdatedOn();
-        this.isActive = dept.isActive();
-        this.isDeleted = dept.isDeleted();
-    }
 }

@@ -32,7 +32,7 @@ public class ApiController {
      */
     @GetMapping("/department")
     @Operation(summary = "Get all department details")
-    public ResponseEntity<List<DepartmentDto>> getDepartments() throws DetailsException {
+    public ResponseEntity<List<DepartmentDto>> getDepartments()  {
         return new ResponseEntity<>(this.deptService.getAllDepartment(), HttpStatus.OK);
     }
 
@@ -44,8 +44,8 @@ public class ApiController {
      */
     @GetMapping("/department/{departmentId}")
     @Operation(summary = "Get department details by departmentId ")
-    public ResponseEntity<?> getDepartment(@PathVariable String departmentId) throws DetailsException {
-        return new ResponseEntity<>(this.deptService.getDepartment(Integer.parseInt(departmentId)), HttpStatus.OK);
+    public ResponseEntity<?> getDepartment(@PathVariable String departmentId)  {
+        return new ResponseEntity<>(this.deptService.getDepartment(Integer.parseInt(departmentId)), HttpStatus.FOUND);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ApiController {
      */
     @PostMapping("/department")
     @Operation(summary = "ADD department details")
-    public ResponseEntity<?> addDepartment(@Valid @RequestBody DepartmentDto department) throws DetailsException {
+    public ResponseEntity<?> addDepartment(@Valid @RequestBody DepartmentDto department)  {
         log.info("Calling and starting addDepartment()");
         return new ResponseEntity<>(this.deptService.addDepartment(department), HttpStatus.CREATED);
     }
@@ -70,7 +70,7 @@ public class ApiController {
      */
     @PutMapping("/department/{id}")
     @Operation(summary = "UPDATE department details")
-    public ResponseEntity<?> updateDepartment(@PathVariable int id, @RequestBody DepartmentDto department) throws DetailsException {
+    public ResponseEntity<?> updateDepartment(@PathVariable int id, @RequestBody DepartmentDto department)  {
         return new ResponseEntity<>(this.deptService.updateDepartment(id, department), HttpStatus.OK);
     }
 
@@ -82,7 +82,7 @@ public class ApiController {
      */
     @DeleteMapping("/department/{departmentId}")
     @Operation(summary = "DELETE department details by id")
-    public ResponseEntity<?> deleteDepartment(@PathVariable String departmentId) throws DetailsException {
+    public ResponseEntity<?> deleteDepartment(@PathVariable String departmentId)  {
         return new ResponseEntity<>(this.deptService.deleteDepartment(Integer.parseInt(departmentId)), HttpStatus.OK);
     }
 
@@ -93,7 +93,7 @@ public class ApiController {
      */
     @GetMapping("/employee")
     @Operation(summary = "Get all employees details")
-    public ResponseEntity<List<EmployeeDto>> getEmployees() throws DetailsException {
+    public ResponseEntity<List<EmployeeDto>> getEmployees()  {
         return new ResponseEntity<>(this.empService.getAllEmployee(), HttpStatus.OK);
     }
 
@@ -106,7 +106,7 @@ public class ApiController {
      */
     @GetMapping("/employee/dept/{deptId}")
     @Operation(summary = "Get employee details by departmentId")
-    public ResponseEntity<List<EmployeeDto>> getEmployeesByDeptId(@PathVariable int deptId) throws DetailsException {
+    public ResponseEntity<List<EmployeeDto>> getEmployeesByDeptId(@PathVariable int deptId)  {
         return new ResponseEntity<>(this.empService.getEmployeeByDeptId(deptId), HttpStatus.OK);
     }
 
@@ -119,8 +119,8 @@ public class ApiController {
      */
     @GetMapping("/employee/{id}")
     @Operation(summary = "Get employee details by employeeId")
-    public ResponseEntity<?> getEmployee(@PathVariable int id) throws DetailsException {
-        return new ResponseEntity<>(this.empService.getEmployee(id), HttpStatus.OK);
+    public ResponseEntity<?> getEmployee(@PathVariable int id)  {
+        return new ResponseEntity<>(this.empService.getEmployee(id), HttpStatus.FOUND);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ApiController {
      */
     @PostMapping("/employee")
     @Operation(summary = "ADD employee details")
-    public ResponseEntity<?> addEmployee(@Valid @RequestBody EmployeeDto emp) throws DetailsException {
+    public ResponseEntity<?> addEmployee(@Valid @RequestBody EmployeeDto emp)  {
         return new ResponseEntity<>(this.empService.addEmployee(emp), HttpStatus.CREATED);
     }
 
@@ -144,7 +144,7 @@ public class ApiController {
      */
     @PutMapping("/employee/{id}")
     @Operation(summary = "UPDATE employee details")
-    public ResponseEntity<?> updateEmployee(@PathVariable int id, @RequestBody EmployeeDto emp) throws DetailsException {
+    public ResponseEntity<?> updateEmployee(@PathVariable int id, @RequestBody EmployeeDto emp)  {
         return new ResponseEntity<>(this.empService.updateEmployee(id, emp), HttpStatus.OK);
     }
 
@@ -156,7 +156,7 @@ public class ApiController {
      */
     @DeleteMapping("/employee/{id}")
     @Operation(summary = "DELETE employee details by Id")
-    public ResponseEntity<?> deleteEmployee(@Valid @PathVariable int id) throws DetailsException {
+    public ResponseEntity<?> deleteEmployee(@Valid @PathVariable int id)  {
         return new ResponseEntity<>(this.empService.deleteEmployee(id), HttpStatus.OK);
     }
 }

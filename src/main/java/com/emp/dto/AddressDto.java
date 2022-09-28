@@ -3,9 +3,9 @@ package com.emp.dto;
 import com.emp.entity.Address;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -14,29 +14,20 @@ import javax.validation.constraints.Pattern;
 @Builder
 public class AddressDto {
     private int addressId;
-    @NotEmpty(message = "{address.address.empty}")
-    @NotBlank(message = "{address.address.empty}")
+    @NotNull(message = "{address.address.empty}")
+    @Size(min =3,max=25, message = "{address.address.size}")
     private String address;
-    @NotEmpty(message = "{address.city.empty}")
-    @NotBlank(message = "{address.city.empty}")
+    @NotNull(message = "{address.city.empty}")
+    @Size(min =3,max=25, message = "{address.city.size}")
     private String city;
-    @NotEmpty(message = "{address.state.empty}")
-    @NotBlank(message = "{address.state.empty}")
+    @NotNull(message = "{address.state.empty}")
+    @Size(min =3,max=25, message = "{address.state.size}")
     private String state;
-    @NotEmpty(message = "{address.pincode.empty}")
-    @NotBlank(message = "{address.pincode.empty}")
+    @NotNull(message = "{address.pincode.empty}")
     @Pattern(regexp = "^[0-9]{6}$")
     private String pincode;
     private boolean isActive = true;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public AddressDto(Address ad) {
-        this.addressId = ad.getAddressId();
-        this.address = ad.getAddress();
-        this.city = ad.getCity();
-        this.state = ad.getState();
-        this.pincode = ad.getPincode();
-        this.isActive = ad.isActive();
-        this.isDeleted = ad.isDeleted();
-    }
+
 }

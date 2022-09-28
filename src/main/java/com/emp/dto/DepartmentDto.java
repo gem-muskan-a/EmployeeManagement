@@ -2,7 +2,6 @@ package com.emp.dto;
 
 import com.emp.entity.Department;
 import lombok.*;
-
 import javax.validation.constraints.*;
 import java.util.Date;
 
@@ -13,11 +12,11 @@ import java.util.Date;
 @Builder
 public class DepartmentDto {
     private int departmentId;
-    @NotEmpty(message = "{department.deptName.empty}")
-    @NotBlank(message = "{department.deptName.empty}")
+    @NotNull(message = "{department.deptName.empty}")
+    @Size(min =3,max=25, message = "{department.deptName.size}")
     private String departmentName;
-    @NotEmpty(message = "{department.departmentDesc.empty}")
-    @NotBlank(message = "{department.departmentDesc.empty}")
+    @NotNull(message = "{department.departmentDesc.empty}")
+    @Size(min =3,max=50, message = "{department.departmentDesc.size}")
     private String departmentDesc;
     @NotNull(message = "{department.createdBy.empty}")
     @Min(value = 1, message = "{department.createdBy.empty}")
@@ -26,17 +25,6 @@ public class DepartmentDto {
     private int updatedBy;
     private Date updatedOn;
     private boolean isActive = true;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public DepartmentDto(Department dept) {
-        this.departmentId = dept.getDepartmentId();
-        this.departmentName = dept.getDepartmentName();
-        this.departmentDesc = dept.getDepartmentDesc();
-        this.createdBy = dept.getCreatedBy();
-        this.updatedBy = dept.getUpdatedBy();
-        this.createdOn = dept.getCreatedOn();
-        this.updatedOn = dept.getUpdatedOn();
-        this.isActive = dept.isActive();
-        this.isDeleted = dept.isDeleted();
-    }
 }

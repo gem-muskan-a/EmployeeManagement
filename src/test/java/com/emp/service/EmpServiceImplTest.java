@@ -1,5 +1,6 @@
 package com.emp.service;
 
+import com.emp.dto.AddressDto;
 import com.emp.dto.EmployeeDto;
 import com.emp.entity.Address;
 import com.emp.entity.Department;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -37,6 +39,8 @@ public class EmpServiceImplTest {
     @InjectMocks
     private EmpServiceImpl empServiceImpl;
 
+    ModelMapper modelMapper=new ModelMapper();
+
     @Test
     @Order(1)
     public void test_getAllEmployees() throws DetailsException {
@@ -49,21 +53,22 @@ public class EmpServiceImplTest {
         expectedResult.add(emp1);
         expectedResult.add(emp2);
 
-        when(empRepo.findAll()).thenReturn(expectedResult);
+        when(empRepo.findByIsDeletedIsFalse()).thenReturn(expectedResult);
         assertEquals(2, empServiceImpl.getAllEmployee().size());
     }
 
     @Test
     @Order(2)
     public void test_addEmployee() throws DetailsException {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
+        Employee emp=modelMapper.map(emp1,Employee.class);
         Department dept = new Department(1, "HR", "Human Resource", 1, new Date(), 1, new Date(), true, false);
 
         when(deptRepository.findById(any())).thenReturn(Optional.of(dept));
-        when(empRepo.save(any())).thenReturn(new Employee(emp1));
-        assertEquals(emp1, empServiceImpl.addEmployee(emp1));
+        when(empRepo.save(emp)).thenReturn(emp);
+        assertEquals(modelMapper.map(emp,EmployeeDto.class).getEmployeeId(), empServiceImpl.addEmployee(emp1).getEmployeeId());
     }
 
     @Test
@@ -94,7 +99,7 @@ public class EmpServiceImplTest {
 
         Department dept = new Department(1, "HR", "Human Resource", 1, new Date(), 1, new Date(), true, false);
 
-        when(empRepo.findAll()).thenReturn(expectedResult);
+        when(empRepo.findByIsDeletedIsFalse()).thenReturn(expectedResult);
         assertEquals(1, empServiceImpl.getEmployeeByDeptId(dept.getDepartmentId()).size());
     }
 
@@ -108,7 +113,7 @@ public class EmpServiceImplTest {
     @Test
     @Order(6)
     public void test_addEmployeeFailsDueToDeptIdNotExists() throws DetailsException {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
         when(deptRepository.findById(anyInt())).thenReturn(Optional.empty());
@@ -118,7 +123,7 @@ public class EmpServiceImplTest {
     @Test
     @Order(7)
     public void test_updateEmployeeFailsDueTotIdNotExists() throws DetailsException {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
         when(empRepo.findById(anyInt())).thenReturn(Optional.empty());
@@ -132,6 +137,30 @@ public class EmpServiceImplTest {
         assertThrows(DetailsException.class, () -> empServiceImpl.deleteEmployee(anyInt()));
     }
 
+    @Test
+    @Order(9)
+    public void test_updateEmployee() {
+        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        Employee emp1 = new Employee(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
+
+        AddressDto address1 = new AddressDto(1, "GOEL katra near", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        EmployeeDto empUpdate = new EmployeeDto(1, "MUSKAN Agrawal", "ASE", 1, "7998671271", address1, false, false);
+
+        when(empRepo.findById(any())).thenReturn(Optional.of(emp1));
+        when(empRepo.save(any())).thenReturn(emp1);
+        assertEquals(empUpdate.getEmployeeName(), empServiceImpl.updateEmployee(empUpdate.getEmployeeId(), empUpdate).getEmployeeName());
+
+    }
+
+    @Test
+    @Order(10)
+    public void test_getEmployee() {
+        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        Employee emp1 = new Employee(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
+
+        when(empRepo.findById(any())).thenReturn(Optional.of(emp1));
+        assertEquals(emp1.getEmployeeName(), empServiceImpl.getEmployee(1).getEmployeeName());
+    }
 }
 
 

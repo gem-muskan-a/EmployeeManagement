@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class DeptServiceImplTest {
     @InjectMocks
     private DeptServiceImpl deptServiceImpl;
 
+    ModelMapper modelMapper=new ModelMapper();
+
     @Test
     @Order(1)
     public void test_getAllDepartment() throws DetailsException {
@@ -47,7 +50,7 @@ public class DeptServiceImplTest {
         expectedResult.add(dept1);
         expectedResult.add(dept2);
 
-        when(deptRepository.findAll()).thenReturn(expectedResult);
+        when(deptRepository.findByIsDeletedIsFalse()).thenReturn(expectedResult);
         assertEquals(expectedResult.size(), deptServiceImpl.getAllDepartment().size());
     }
 
@@ -70,10 +73,10 @@ public class DeptServiceImplTest {
         Employee emp1 = new Employee(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
         DepartmentDto dept = new DepartmentDto(1, "HR", "Human Resource", 1, new Date(), 1, new Date(), true, false);
-
+        Department dept1= modelMapper.map(dept,Department.class);
         when(empRepo.findById(any())).thenReturn(Optional.of(emp1));
-        when(deptRepository.save(any())).thenReturn(new Department(dept));
-        assertEquals(dept, deptServiceImpl.addDepartment(dept));
+        when(deptRepository.save(dept1)).thenReturn(dept1);
+        assertEquals(modelMapper.map(dept1, DepartmentDto.class).getDepartmentId(), deptServiceImpl.addDepartment(dept).getDepartmentId());
 
     }
 
@@ -108,4 +111,39 @@ public class DeptServiceImplTest {
         when(deptRepository.findById(anyInt())).thenReturn(Optional.empty());
         assertThrows(DetailsException.class, () -> deptServiceImpl.deleteDepartment(anyInt()));
     }
+
+    @Test
+    @Order(8)
+    public void test_getAllDepartmentFailsDueToNoDepartmentFound() throws DetailsException {
+        List<Department> expectedResult = new ArrayList<>();
+
+        when(deptRepository.findByIsDeletedIsFalse()).thenReturn(expectedResult);
+        assertThrows(DetailsException.class, () -> deptServiceImpl.getAllDepartment());
+    }
+
+    @Test
+    @Order(9)
+    public void test_getDepartment() {
+        Department dept = new Department(1, "HR", "Human Resource", 1, new Date(), 1, new Date(), true, false);
+
+        when(deptRepository.findById(any())).thenReturn(Optional.of(dept));
+        assertEquals(this.modelMapper.map(dept, DepartmentDto.class).getDepartmentName(), deptServiceImpl.getDepartment(dept.getDepartmentId()).getDepartmentName());
+    }
+
+    @Test
+    @Order(10)
+    public void test_updateDepartment() {
+        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        Employee emp1 = new Employee(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
+
+        Department dept = new Department(1, "HR", "Human Resource", 1, new Date(), 1, new Date(), true, false);
+        DepartmentDto deptExpected = new DepartmentDto(1, "HR", "Human Resource Management", 1, new Date(), 1, new Date(), true, false);
+
+        when(empRepo.findById(any())).thenReturn(Optional.of(emp1));
+        when(deptRepository.findById(any())).thenReturn(Optional.of(dept));
+        when(deptRepository.save(any())).thenReturn(dept);
+        assertEquals(this.modelMapper.map(deptExpected, DepartmentDto.class).getDepartmentDesc(), deptServiceImpl.updateDepartment(dept.getDepartmentId(), deptExpected).getDepartmentDesc());
+    }
+
+
 }

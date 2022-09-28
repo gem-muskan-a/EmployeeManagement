@@ -1,11 +1,12 @@
 package com.emp.controller;
 
+import com.emp.dto.AddressDto;
 import com.emp.dto.DepartmentDto;
 import com.emp.dto.EmployeeDto;
-import com.emp.entity.Address;
 import com.emp.service.DeptServiceImpl;
 import com.emp.service.EmpServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,11 +18,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -74,7 +77,7 @@ public class ApiControllerTest {
         when(deptService.getDepartment(dept1.getDepartmentId())).thenReturn(dept1);
         this.mockMvc
                 .perform(get("/department/{departmentId}", dept1.getDepartmentId()))
-                .andExpect(status().isOk())
+                .andExpect(status().isFound())
                 .andExpect(MockMvcResultMatchers.jsonPath(".departmentId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath(".departmentName").value("HR"))
                 .andExpect(MockMvcResultMatchers.jsonPath(".departmentDesc").value("Human Resource"))
@@ -134,18 +137,18 @@ public class ApiControllerTest {
         mockMvc.perform(delete("/department/{id}", dept1.getDepartmentId()))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(".departmentId").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath(".departmentName").value("HR"))
-                .andExpect(MockMvcResultMatchers.jsonPath(".departmentDesc").value("Human Resource"))
+                .andExpect(MockMvcResultMatchers.jsonPath(".active").value(false))
+                .andExpect(MockMvcResultMatchers.jsonPath(".deleted").value(true))
                 .andDo(print());
     }
 
     @Test
     @Order(6)
     public void test_getEmployees() throws Exception {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
-        Address address2 = new Address(2, "Pipraich", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address2 = new AddressDto(2, "Pipraich", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp2 = new EmployeeDto(2, "MUSKAN", "ASE", 1, "7998671271", address2, true, false);
 
         List<EmployeeDto> expectedResult = new ArrayList<>();
@@ -164,10 +167,10 @@ public class ApiControllerTest {
     public void test_getEmployeesByDeptId() throws Exception {
         List<EmployeeDto> expectedResult = new ArrayList<>();
 
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
-        Address address2 = new Address(2, "Pipraich", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address2 = new AddressDto(2, "Pipraich", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp2 = new EmployeeDto(2, "MUSKAN", "ASE", 1, "7998671271", address2, true, false);
 
         expectedResult.add(emp1);
@@ -184,13 +187,13 @@ public class ApiControllerTest {
     @Test
     @Order(8)
     public void test_getEmployee() throws Exception {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
         when(empService.getEmployee(1)).thenReturn(emp1);
         this.mockMvc
                 .perform(get("/employee/{id}", 1))
-                .andExpect(status().isOk())
+                .andExpect(status().isFound())
                 .andExpect(MockMvcResultMatchers.jsonPath(".employeeId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath(".employeeName").value("MUSKAN"))
                 .andExpect(MockMvcResultMatchers.jsonPath(".employeeDesignation").value("ASE"))
@@ -200,7 +203,7 @@ public class ApiControllerTest {
     @Test
     @Order(9)
     public void test_addEmployee() throws Exception {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
         when(empService.addEmployee(any())).thenReturn(emp1);
@@ -225,7 +228,7 @@ public class ApiControllerTest {
     @Test
     @Order(10)
     public void test_updateEmployee() throws Exception {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto emp1 = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
 
         when(empService.updateEmployee(anyInt(), any())).thenReturn(emp1);
@@ -250,38 +253,42 @@ public class ApiControllerTest {
     @Test
     @Order(11)
     public void test_deleteEmployee() throws Exception {
-        Address address = new Address(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        List<Boolean> res=new ArrayList();
+        res.add(true);
+        res.add(false);
+
+        AddressDto address = new AddressDto(1, "GOEL katra", "Gorakhpur", "UttarPradesh", "273152", true, false);
         EmployeeDto empExpected = new EmployeeDto(1, "MUSKAN", "ASE", 1, "7998671271", address, false, true);
         when(empService.deleteEmployee(1)).thenReturn(empExpected);
         this.mockMvc
                 .perform(delete("/employee/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(".employeeId").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath(".employeeName").value("MUSKAN"))
-                .andExpect(MockMvcResultMatchers.jsonPath(".employeeDesignation").value("ASE"))
+                .andExpect(MockMvcResultMatchers.jsonPath(".deleted").value(res))
                 .andDo(print());
     }
 
-//    @Test
-//    @Order(12)
-//    public void test_addEmployeeFail() throws Exception {
-//        Address address = new Address(1, "", "Gorakhpur", "UttarPradesh", "273152", true, false);
-//        Employee emp1 = new Employee(1, "MUSKAN", "ASE", 1, "7998671271", address, true, false);
-//
-//        when(empService.addEmployee(any())).thenReturn(emp1);
-//
-//        //Converting our Java object to JSON format bcoz MockMvc works only with JSON format
-//        ObjectMapper mapper = new ObjectMapper();
-//        String jsonbody = mapper.writeValueAsString(emp1);
-//
-//        this.mockMvc
-//                .perform(
-//                        post("/employee/")
-//                                .content(jsonbody)
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                )
-//                .andExpect(status().isBadRequest())
-//                .andExpect(result -> assertThat(result.getResolvedException() instanceof MethodArgumentNotValidException).isEqualTo(true))
-//                .andDo(print());
-//    }
+    @Test
+    @Order(12)
+    public void test_addEmployeeFail() throws Exception {
+        AddressDto address = new AddressDto(1, "", "Gorakhpur", "UttarPradesh", "273152", true, false);
+        EmployeeDto emp1 = new EmployeeDto(1, "", "ASE", 1, "7998671271", address, true, false);
+
+        when(empService.addEmployee(any())).thenReturn(emp1);
+
+        //Converting our Java object to JSON format bcoz MockMvc works only with JSON format
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonbody = mapper.writeValueAsString(emp1);
+
+        this.mockMvc
+                .perform(
+                        post("/employee/")
+                                .content(jsonbody)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertThat(result.getResolvedException() instanceof MethodArgumentNotValidException).isEqualTo(true))
+                .andExpect(result -> Assertions.assertThat(result.getResolvedException().getMessage()).contains("Please provide employee name having length between 3 and 25"))
+                .andDo(print());
+    }
 }

@@ -6,13 +6,13 @@ import com.emp.utility.DetailsException;
 import java.util.List;
 
 public interface DeptService {
-    List<DepartmentDto> getAllDepartment() throws DetailsException;
+    List<DepartmentDto> getAllDepartment();
 
-    DepartmentDto deleteDepartment(int id) throws DetailsException;
+    DepartmentDto deleteDepartment(int id);
 
-    DepartmentDto updateDepartment(int id, DepartmentDto department) throws DetailsException;
+    DepartmentDto updateDepartment(int id, DepartmentDto department);
 
-    DepartmentDto addDepartment(DepartmentDto department) throws DetailsException;
+    DepartmentDto addDepartment(DepartmentDto department);
 
-    DepartmentDto getDepartment(int id) throws DetailsException;
+    DepartmentDto getDepartment(int id);
 }

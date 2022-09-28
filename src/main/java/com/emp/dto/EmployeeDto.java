@@ -1,11 +1,10 @@
 package com.emp.dto;
 
-import com.emp.entity.Address;
 import com.emp.entity.Employee;
 import lombok.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -15,29 +14,19 @@ import javax.validation.constraints.Pattern;
 public class EmployeeDto {
 
     private int employeeId;
-    @NotEmpty(message ="{employee.name.empty}")
-    @NotBlank(message = "{employee.name.empty}")
+    @NotNull(message = "{employee.name.empty}")
+    @Size(min =3,max=25, message = "{employee.name.size}")
     private String employeeName;
-    @NotEmpty(message = "{employee.designation.empty}")
-    @NotBlank(message = "{employee.designation.empty}")
+    @NotNull(message = "{employee.designation.empty}")
+    @Size(min =3,max=25, message = "{employee.designation.size}")
     private String employeeDesignation;
     private int departmentId;
-    @NotEmpty(message = "{employee.phoneNumber.empty}")
-    @NotBlank(message = "{employee.phoneNumber.empty}")
+    @NotNull(message = "{employee.phoneNumber.empty}")
+    @Size(message = "{employee.phoneNumber.size}")
     @Pattern(regexp = "^[0-9]{10}$")
     private String phoneNumber;
-    private Address address;
+    private AddressDto address;
     private boolean isActive = true;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public EmployeeDto(Employee emp) {
-        this.employeeId = emp.getEmployeeId();
-        this.departmentId = emp.getDepartmentId();
-        this.employeeDesignation = emp.getEmployeeDesignation();
-        this.employeeName = emp.getEmployeeName();
-        this.phoneNumber = emp.getPhoneNumber();
-        this.address = emp.getAddress();
-        this.isActive = emp.isActive();
-        this.isDeleted = emp.isDeleted();
-    }
 }

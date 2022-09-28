@@ -23,16 +23,6 @@ public class Employee {
     @JoinColumn(name = "address_id", referencedColumnName = "addressId")
     private Address address;
     private boolean isActive = true;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    public Employee(EmployeeDto emp) {
-        this.employeeId = emp.getEmployeeId();
-        this.departmentId = emp.getDepartmentId();
-        this.employeeDesignation = emp.getEmployeeDesignation();
-        this.employeeName = emp.getEmployeeName();
-        this.phoneNumber = emp.getPhoneNumber();
-        this.address = emp.getAddress();
-        this.isActive = emp.isActive();
-        this.isDeleted = emp.isDeleted();
-    }
 }

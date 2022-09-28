@@ -6,16 +6,16 @@ import com.emp.utility.DetailsException;
 import java.util.List;
 
 public interface EmpService {
-    List<EmployeeDto> getAllEmployee() throws DetailsException;
+    List<EmployeeDto> getAllEmployee();
 
-    EmployeeDto getEmployee(int id) throws DetailsException;
+    EmployeeDto getEmployee(int id);
 
-    EmployeeDto addEmployee(EmployeeDto employeeDto) throws DetailsException;
+    EmployeeDto addEmployee(EmployeeDto employeeDto);
 
-    EmployeeDto updateEmployee(int empId, EmployeeDto employeeDto) throws DetailsException;
+    EmployeeDto updateEmployee(int empId, EmployeeDto employeeDto);
 
-    EmployeeDto deleteEmployee(int id) throws DetailsException;
+    EmployeeDto deleteEmployee(int id);
 
-    List<EmployeeDto> getEmployeeByDeptId(int deptId) throws DetailsException;
+    List<EmployeeDto> getEmployeeByDeptId(int deptId);
 
 }
